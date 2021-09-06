@@ -51,11 +51,11 @@
 12. Escribe una función find() para encontrar los restaurantes que no preparan ninguna cocina 'del continente americano' y lograron una puntuación superior a 70 y se ubicaron en la **longitud** inferior a -65.754168.
 
     *Todos los restaurantes con puntuación mayor a 70 se encuentran a una longitud de 40, por lo que no habrá ningúno que sea menor a -65.754168*
-    `db.restaurants.find({"cuisine":/American/,"grades.score":{$gt:70},"address.coord.1":{$lt:-65.754168}},{"cuisine":1,"grades":1,"address.coord":1})`
+    `db.restaurants.find({"cuisine":{$not:/American/},"grades.score":{$gt:70},"address.coord.1":{$lt:-65.754168}},{"cuisine":1,"grades":1,"address.coord":1})`
 
 13. Escribe una función find() para encontrar los restaurantes que no preparan ninguna cocina 'del continente americano' y obtuvieron una calificación de 'A' que no pertenece al distrito de Brooklyn. El documento debe mostrarse según la cocina en orden descendente.
 
-    `db.restaurants.find({"cuisine":/American/, "grades.grade": {$in:["A"]}, "borough": {$nin:["Brooklyn"]}},{"cuisine":1,"grades":1, "borough":1}).sort({"cuisine":-1})`
+    `db.restaurants.find({"cuisine":{$not:/American/}, "grades.grade": {$in:["A"]}, "borough": {$nin:["Brooklyn"]}},{"cuisine":1,"grades":1, "borough":1}).sort({"cuisine":-1})`
 
 14. Escribe una función find() para encontrar el ID del restaurante, el nombre, el municipio y la cocina de aquellos restaurantes que contienen 'Wil' como las primeras tres letras de su nombre.
 
@@ -95,15 +95,15 @@
 
 23. Escribe una función find() para encontrar el ID del restaurante, el nombre y las calificaciones de aquellos restaurantes donde el segundo elemento de la matriz de calificaciones contiene una calificación de 'A' y una puntuación de 9 en un ISODate '2014-08-11T00: 00: 00Z'.
 
-    `db.restaurants.find({"grades": {$elemMatch: {"grade":"A", "score": 9, "date":ISODate("2014-08-11T00:00:00.000Z")}} }, { "_id": 1, "name": 1, "grades": 1 })`
-
-24. Escribe una función find() para encontrar el ID del restaurante, el nombre, la dirección y la ubicación geográfica para aquellos restaurantes donde el segundo elemento de la matriz de coordenadas contiene un valor que sea más de 42 y hasta 52 ..
-
     *Hay un solo resultado que coincide con la busqueda, pero no se porque no logro acceder a el con grades.1*
     `db.restaurants.find({ "grades.1": { $elemMatch: { "grade": "A", "score": 9, "date": ISODate("2014-08-11T00:00:00.000Z") } } }, { "_id": 1, "name": 1, "grades": 1 })`
 
     *Si no agrego el .1 la búsqueda me regresa los 2 registros que cumplen que en un solo elemento del arreglo se cumplan las condiciones*
     `db.restaurants.find({ "grades": { $elemMatch: { "grade": "A", "score": 9, "date": ISODate("2014-08-11T00:00:00.000Z") } } }, { "_id": 1, "name": 1, "grades": 1 })`
+
+24. Escribe una función find() para encontrar el ID del restaurante, el nombre, la dirección y la ubicación geográfica para aquellos restaurantes donde el segundo elemento de la matriz de coordenadas contiene un valor que sea más de 42 y hasta 52 .
+
+    `db.restaurants.find({"address.coord.1":{$gt:42}, "address.coord.1":{$lt:52}}, { "_id": 1, "name": 1, "address": 1 })`
 
 25. Escribe una función find() para organizar el nombre de los restaurantes en orden ascendente junto con todas las columnas.
 
@@ -115,7 +115,7 @@
 
 27. Escribe una función find() para organizar el nombre de la cocina en orden ascendente y para ese mismo distrito de cocina debe estar en orden descendente.
 
-    `db.restaurants.find().sort({"name":-1, "cuisine":-1})`
+    `db.restaurants.find().sort({"cuisine":1, "borough":-1})`
 
 28. Escribe una función find() para saber si todas las direcciones contienen la calle o no.
 
@@ -133,8 +133,8 @@
 
 31. Escribe una función find() para encontrar el nombre del restaurante, el municipio, la longitud y la latitud y la cocina de aquellos restaurantes que contienen 'mon' como tres letras en algún lugar de su nombre.
 
-    `db.restaurants.find({"name":/mon/},{"_id":0, "name":1, "borough":1, "address.coord":1, "cuisine":1})`
+    `db.restaurants.find({"name":{$regex: /mon/i} },{"_id":0, "name":1, "borough":1, "address.coord":1, "cuisine":1})`
 
 32. Escribe una función find() para encontrar el nombre del restaurante, el distrito, la longitud y la latitud y la cocina de aquellos restaurantes que contienen 'Mad' como las primeras tres letras de su nombre.
 
-    `db.restaurants.find({"name":/^Mad/},{"_id":0, "name":1, "borough":1, "address.coord":1, "cuisine":1})`
+    `db.restaurants.find({"name":{$regex: /^Mad/i} },{"_id":0, "name":1, "borough":1, "address.coord":1, "cuisine":1})`
